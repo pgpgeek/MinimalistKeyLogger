@@ -1,3 +1,4 @@
+
 # MinimalistKeyLogger
 
 Hello this project is a minimalist keylogger for **WINDOWS**.
@@ -12,24 +13,29 @@ Hello this project is a minimalist keylogger for **WINDOWS**.
 
 Secret Code :
 You can add, remove, edit some action in the detectCurrentCode function.
-using the secretCode structure like :
-{
+Using the secretCode structure like :
+
+    {
     keyCode : "aSecretTextFilledOnKeyboard",
     cmd : "an evil command runned after keyCode be played on keyboard"
-}
+    }
+
 
 Compile with static library :
--static-libgcc -static-libstdc++
+
+> -static-libgcc -static-libstdc++
 
 
-Run :
+**Run :**
 You can run in production mode with no parameter :
 Ex :
-MinimalistKeylogger.exe
+
+> MinimalistKeylogger.exe
 
 You can run in debug mode with any parameter (a log file will be generated with all keyboard input).
 Ex :
-MinimalistKeylogger.exe debug
+
+> MinimalistKeylogger.exe --debug
 
 
 
