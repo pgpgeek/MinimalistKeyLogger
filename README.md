@@ -38,7 +38,7 @@ Ex :
 > MinimalistKeylogger.exe --debug
 
 
-Can Work with qrcode/barcode scanner, try it with :
+Can Work with qrcode/barcode scanner, try it with :\\
 ![ipconfig](https://i.postimg.cc/441dzsvG/t-l-chargement-1.png)
 
 
