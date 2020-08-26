@@ -32,7 +32,7 @@ Ex :
 
 > MinimalistKeylogger.exe
 
-You can run in debug mode with any parameter (a log file will be generated with all keyboard input).
+You can run in debug mode with -d or --debug (a log file will be generated with all keyboard input).
 Ex :
 
 > MinimalistKeylogger.exe --debug

